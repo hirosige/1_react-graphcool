@@ -4,9 +4,32 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import { ApolloProvider } from 'react-apollo';
+import { ApolloClient } from 'apollo-client';
+import { HttpLink, InMemoryCache } from 'apollo-client-preset';
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
+const GRAPHQL_ENDPOINT = "https://api.graph.cool/simple/v1/cjnu0mxiv825v0137el5mt4q8";
+
+if (!GRAPHQL_ENDPOINT) {
+  throw Error("GRAPHQL_ENDPOINTが設定されていません。");
+}
+
+const client = new ApolloClient({
+  link: new HttpLink({
+    uri: GRAPHQL_ENDPOINT
+  }),
+  cache: new InMemoryCache()
+});
+
+const ApolloApp = (
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>
+)
+
+ReactDOM.render(
+  ApolloApp,
+  document.getElementById('root')
+);
+
 serviceWorker.unregister();
